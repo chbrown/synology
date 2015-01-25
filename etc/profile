@@ -1,0 +1,13 @@
+# this file belongs at /etc/profile but that location gets rewritten whenever
+# a firmware update is installed, unfortunately.
+ulimit -c unlimited
+
+export PATH=/opt/bin:/opt/sbin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/syno/sbin:/usr/syno/bin:/usr/local/sbin:/usr/local/bin
+export PGDATA=/var/services/pgsql
+export TERMINFO=/usr/share/terminfo
+export TERM=${TERM:-cons25}
+export PAGER=more
+export LC_ALL=en_US.utf8
+export LANG=en_US.utf8
+
+[ -x /opt/bin/bash ] && exec bash
