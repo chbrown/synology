@@ -1,13 +1,44 @@
-# this file belongs at /etc/profile but that location gets rewritten whenever
-# a firmware update is installed, unfortunately.
-ulimit -c unlimited
+#/etc/profile: system-wide .profile file for ash.
 
-export PATH=/opt/bin:/opt/sbin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/syno/sbin:/usr/syno/bin:/usr/local/sbin:/usr/local/bin
-export PGDATA=/var/services/pgsql
-export TERMINFO=/usr/share/terminfo
-export TERM=${TERM:-cons25}
-export PAGER=more
+umask 022
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/syno/sbin:/usr/syno/bin:/usr/local/sbin:/usr/local/bin
+export PATH
+
+PGDATA=/var/services/pgsql
+export PGDATA
+
+TERMINFO=/usr/share/terminfo
+export TERMINFO
+
+TERM=${TERM:-cons25}
+export TERM
+
+PAGER=more
+export PAGER
+
 export LC_ALL=en_US.utf8
 export LANG=en_US.utf8
 
-[ -x /opt/bin/bash ] && exec bash
+PS1="`hostname`> "
+
+alias dir="ls -al"
+alias ll="ls -la"
+
+ulimit -c unlimited
+
+if [ -f /etc.defaults/.bashrc_profile ]; then
+  source /etc.defaults/.bashrc_profile
+fi
+
+# Everything above is the default configuration that gets rewritten
+# to /etc/profile whenever a firmware update is installed.
+#
+# Additions follow:
+
+PATH=/opt/bin:/opt/sbin:$PATH
+export PATH
+
+if [ -x /opt/bin/bash ]; then
+  exec bash
+fi
