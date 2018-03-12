@@ -6,10 +6,16 @@
 
 ## BusyBox configuration
 
-Note that the `root` and `admin` users share the same password. We'll pretend you called your Synology "Fileserver" and have `ssh` listening in on the usual port 22.
+Note that the `root` and `admin` users share the same password.
+We'll pretend you called your Synology `Fileserver` and have `ssh` listening on the usual port 22.
 
 1. `ssh root@Fileserver.local`
-2. While BusyBox is a Debian flavor of linux, it doesn't provide `dpkg`. Instead, setup `ipkg` using this [optware bootstrap](https://github.com/trepmag/ds213j-optware-bootstrap).
+2. While BusyBox is a Debian flavor of linux, it doesn't provide `dpkg`.
+   Instead, install `ipkg` by running [`setup_ipkg.sh`](setup_ipkg.sh) as root on `Fileserver`:
+
+       ssh root@Fileserver.local sh < setup_ipkg.sh
+
+   The `setup_ipkg.sh` script is based on @trepmag's [optware bootstrap](https://github.com/trepmag/ds213j-optware-bootstrap).
 
 These pages were also helpful:
 
@@ -24,7 +30,7 @@ And these are the Optware lists that different distros pull from:
 * http://ipkg.nslu2-linux.org/feeds/optware/syno-x07/cross/unstable/syno-x07-bootstrap_1.2-7_arm.xsh
 * http://ipkg.nslu2-linux.org/feeds/optware/cs08q1armel/cross/unstable/ipkg-opt_0.99.163-10_arm.ipk
 
-Depending on the make and model of Synology NAS, you'll need to a different feed.
+Depending on the make and model of your Synology NAS, you'll need to fetch a different feed.
 
 I have a DS214se (Series "x14"), and its specs are:
 
@@ -42,21 +48,23 @@ I have a DS214se (Series "x14"), and its specs are:
 * Run `ipkg update` as root to update the list of available ipkg-installable packages.
 * Run `ipkg install tmux bash` as root, for example, to install tmux and bash.
 * `~admin` should expand to `/var/services/homes/admin`
-* `~admin/.ssh/authorized_keys2` is a typical `authorized_keys` file. where the admin user's public SSH keys are stored. If it doesn't let you login using SSH key authentication, the permissions are probably wrong. They should be:
+* `~admin/.ssh/authorized_keys2` is a typical `authorized_keys` file where the admin user's public SSH keys are stored.
+  If it doesn't let you login using SSH key authentication, the permissions are probably wrong.
+  They should be:
 
-        lrwxrwxrwx root:root   /var/services/homes -> /volume1/homes
-        drwxr-xr-x admin:users /var/services/homes/admin
-        drwx------ admin:users /var/services/homes/admin/.ssh
-        -rw-r--r-- admin:users /var/services/homes/admin/.ssh/authorized_keys2
+      lrwxrwxrwx root:root   /var/services/homes -> /volume1/homes
+      drwxr-xr-x admin:users /var/services/homes/admin
+      drwx------ admin:users /var/services/homes/admin/.ssh
+      -rw-r--r-- admin:users /var/services/homes/admin/.ssh/authorized_keys2
 
-    If not, the following commands should fix them:
+  If not, the following commands should fix them:
 
-        chown -R admin:users ~admin
-        chmod 777 ~admin/.ssh
-        chmod 644 ~admin/.ssh/authorized_keys2
+      chown -R admin:users ~admin
+      chmod 777 ~admin/.ssh
+      chmod 644 ~admin/.ssh/authorized_keys2
 
 
-## Recovering after a system update
+## Restoring normalcy (customizations) after a system update
 
 1. Login as root: `ssh root@Fileserver.local`
 2. Run `cat ~admin/etc-profile > /etc/profile`
