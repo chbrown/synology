@@ -1,0 +1,32 @@
+#/etc/profile: system-wide .profile file for ash.
+
+umask 022
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/syno/sbin:/usr/syno/bin:/usr/local/sbin:/usr/local/bin
+export PATH
+
+PGDATA=/var/services/pgsql
+export PGDATA
+
+TERMINFO=/usr/share/terminfo
+export TERMINFO
+
+TERM=${TERM:-cons25}
+export TERM
+
+PAGER=more
+export PAGER
+
+export LC_ALL=en_US.utf8
+export LANG=en_US.utf8
+
+PS1="`hostname`> "
+
+alias dir="ls -al"
+alias ll="ls -la"
+
+ulimit -c unlimited
+
+if [ -f /etc.defaults/.bashrc_profile ]; then
+	source /etc.defaults/.bashrc_profile
+fi
